@@ -3,80 +3,190 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lawn Care Portal Mockup</title>
+<title>Lawn Care Portal</title>
+
 <style>
-body { font-family: Arial; background:#f4f6f8; margin:0; }
+body { font-family: Arial; margin:0; background:#f4f6f8; }
 header { background:#1f4e79; color:white; padding:15px; }
 .container { padding:20px; }
 .card { background:white; padding:15px; margin-bottom:15px; border-radius:10px; }
 button { padding:10px; border:none; border-radius:5px; cursor:pointer; }
 .primary { background:#1f4e79; color:white; }
+.secondary { background:#e6eef6; }
 input, select { padding:8px; margin:5px 0; width:100%; }
+.tabs button { margin-right:10px; }
 </style>
+
 </head>
 <body>
+
 <header>
-<h2>WWPO Lawn Service Portal (Mockup)</h2>
+<h2>Lawn Care Business System</h2>
 </header>
+
 <div class="container">
 
+<div class="tabs">
+<button onclick="showTab('owner')">Owner</button>
+<button onclick="showTab('customer')">Customer</button>
+</div>
+
+<!-- OWNER PANEL -->
+<div id="owner">
+
 <div class="card">
-<h3>Customer</h3>
-<select id="customer">
-<option>Johnson Family</option>
-<option>Oak Ridge HOA</option>
-<option>Baker Residence</option>
-</select>
-<p><strong>Balance:</strong> $<span id="balance">165</span></p>
+<h3>Add Customer</h3>
+<input id="name" placeholder="Customer Name">
+<input id="street" placeholder="Street Number (ex: 1234)">
+<input id="address" placeholder="Full Address">
+<button class="primary" onclick="addCustomer()">Save Customer</button>
 </div>
 
 <div class="card">
-<h3>Add Job / Charge</h3>
+<h3>Find Customer (Street #)</h3>
+<input id="lookup" placeholder="Enter street number">
+<button class="primary" onclick="findCustomer()">Find</button>
+<p id="currentCustomer"></p>
+</div>
+
+<div class="card">
+<h3>Add Job</h3>
 <select id="service">
 <option value="55">Mowing - $55</option>
 <option value="185">Mulch - $185</option>
-<option value="95">Shrub Trim - $95</option>
+<option value="95">Trim - $95</option>
+<option value="0">Custom</option>
 </select>
-<input type="number" id="custom" placeholder="Custom amount (optional)">
-<input type="text" id="notes" placeholder="Notes">
-<button class="primary" onclick="addCharge()">Add Charge</button>
+<input id="amount" placeholder="Custom amount">
+<input id="notes" placeholder="Notes">
+<button class="primary" onclick="addJob()">Add Job</button>
 </div>
 
 <div class="card">
 <h3>Invoices</h3>
-<ul id="invoices"></ul>
+<ul id="ownerInvoices"></ul>
+</div>
+
+</div>
+
+<!-- CUSTOMER PANEL -->
+<div id="customer" style="display:none">
+
+<div class="card">
+<h3>Customer Login</h3>
+<input id="loginStreet" placeholder="Enter your street number">
+<button class="primary" onclick="login()">Login</button>
+</div>
+
+<div id="customerArea"></div>
+
 </div>
 
 </div>
 
 <script>
-let balance = 165;
-let invoices = [];
 
-function addCharge(){
-  let service = document.getElementById('service');
-  let amount = document.getElementById('custom').value || service.value;
-  let notes = document.getElementById('notes').value;
+let customers = JSON.parse(localStorage.getItem("customers")) || [];
+let selected = null;
+let loggedIn = null;
 
-  amount = Number(amount);
-  balance += amount;
-
-  invoices.unshift(`${new Date().toLocaleDateString()} - $${amount} - ${notes || service.options[service.selectedIndex].text}`);
-
-  document.getElementById('balance').innerText = balance;
-
-  renderInvoices();
+function save(){
+localStorage.setItem("customers", JSON.stringify(customers));
 }
 
-function renderInvoices(){
-  let list = document.getElementById('invoices');
-  list.innerHTML = '';
-  invoices.forEach(inv => {
-    let li = document.createElement('li');
-    li.innerText = inv;
-    list.appendChild(li);
-  });
+function showTab(tab){
+document.getElementById("owner").style.display = tab==="owner" ? "block":"none";
+document.getElementById("customer").style.display = tab==="customer" ? "block":"none";
 }
+
+function addCustomer(){
+let c = {
+name: name.value,
+street: street.value,
+address: address.value,
+jobs:[]
+};
+customers.push(c);
+save();
+alert("Customer added");
+}
+
+function findCustomer(){
+selected = customers.find(c => c.street === lookup.value);
+if(selected){
+currentCustomer.innerText = selected.name + " - " + selected.address;
+renderOwnerInvoices();
+}else{
+currentCustomer.innerText = "Not found";
+}
+}
+
+function addJob(){
+if(!selected){ alert("Find customer first"); return; }
+
+let price = amount.value || service.value;
+
+selected.jobs.push({
+date: new Date().toLocaleDateString(),
+service: service.options[service.selectedIndex].text,
+amount: Number(price),
+notes: notes.value,
+paid:false
+});
+
+save();
+renderOwnerInvoices();
+}
+
+function renderOwnerInvoices(){
+let list = document.getElementById("ownerInvoices");
+list.innerHTML = "";
+
+selected.jobs.forEach(j=>{
+let li = document.createElement("li");
+li.innerText = `${j.date} - $${j.amount} - ${j.service}`;
+list.appendChild(li);
+});
+}
+
+function login(){
+loggedIn = customers.find(c => c.street === loginStreet.value);
+if(!loggedIn){ alert("Not found"); return; }
+renderCustomer();
+}
+
+function renderCustomer(){
+let div = document.getElementById("customerArea");
+
+let balance = loggedIn.jobs
+.filter(j=>!j.paid)
+.reduce((sum,j)=>sum+j.amount,0);
+
+div.innerHTML = `
+<div class="card">
+<h3>${loggedIn.name}</h3>
+<p><strong>Balance:</strong> $${balance}</p>
+<button onclick="payAll()" class="primary">Pay All</button>
+</div>
+
+<div class="card">
+<h3>History</h3>
+<ul>
+${loggedIn.jobs.map(j=>`
+<li>${j.date} - $${j.amount} - ${j.service} - ${j.paid?"Paid":"Unpaid"}</li>
+`).join("")}
+</ul>
+</div>
+`;
+}
+
+function payAll(){
+loggedIn.jobs.forEach(j=>j.paid=true);
+save();
+renderCustomer();
+alert("Paid (mock)");
+}
+
 </script>
 
 </body>
