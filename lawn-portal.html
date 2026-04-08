@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lawn Care Portal Mockup</title>
+<style>
+body { font-family: Arial; background:#f4f6f8; margin:0; }
+header { background:#1f4e79; color:white; padding:15px; }
+.container { padding:20px; }
+.card { background:white; padding:15px; margin-bottom:15px; border-radius:10px; }
+button { padding:10px; border:none; border-radius:5px; cursor:pointer; }
+.primary { background:#1f4e79; color:white; }
+input, select { padding:8px; margin:5px 0; width:100%; }
+</style>
+</head>
+<body>
+<header>
+<h2>WWPO Lawn Service Portal (Mockup)</h2>
+</header>
+<div class="container">
+
+<div class="card">
+<h3>Customer</h3>
+<select id="customer">
+<option>Johnson Family</option>
+<option>Oak Ridge HOA</option>
+<option>Baker Residence</option>
+</select>
+<p><strong>Balance:</strong> $<span id="balance">165</span></p>
+</div>
+
+<div class="card">
+<h3>Add Job / Charge</h3>
+<select id="service">
+<option value="55">Mowing - $55</option>
+<option value="185">Mulch - $185</option>
+<option value="95">Shrub Trim - $95</option>
+</select>
+<input type="number" id="custom" placeholder="Custom amount (optional)">
+<input type="text" id="notes" placeholder="Notes">
+<button class="primary" onclick="addCharge()">Add Charge</button>
+</div>
+
+<div class="card">
+<h3>Invoices</h3>
+<ul id="invoices"></ul>
+</div>
+
+</div>
+
+<script>
+let balance = 165;
+let invoices = [];
+
+function addCharge(){
+  let service = document.getElementById('service');
+  let amount = document.getElementById('custom').value || service.value;
+  let notes = document.getElementById('notes').value;
+
+  amount = Number(amount);
+  balance += amount;
+
+  invoices.unshift(`${new Date().toLocaleDateString()} - $${amount} - ${notes || service.options[service.selectedIndex].text}`);
+
+  document.getElementById('balance').innerText = balance;
+
+  renderInvoices();
+}
+
+function renderInvoices(){
+  let list = document.getElementById('invoices');
+  list.innerHTML = '';
+  invoices.forEach(inv => {
+    let li = document.createElement('li');
+    li.innerText = inv;
+    list.appendChild(li);
+  });
+}
+</script>
+
+</body>
+</html>
