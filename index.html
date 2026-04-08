@@ -1,193 +1,779 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lawn Care Portal</title>
-
-<style>
-body { font-family: Arial; margin:0; background:#f4f6f8; }
-header { background:#1f4e79; color:white; padding:15px; }
-.container { padding:20px; }
-.card { background:white; padding:15px; margin-bottom:15px; border-radius:10px; }
-button { padding:10px; border:none; border-radius:5px; cursor:pointer; }
-.primary { background:#1f4e79; color:white; }
-.secondary { background:#e6eef6; }
-input, select { padding:8px; margin:5px 0; width:100%; }
-.tabs button { margin-right:10px; }
-</style>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lawn Care Portal Mockup</title>
+  <style>
+    :root {
+      --bg: #f4f7f2;
+      --card: #ffffff;
+      --text: #17301f;
+      --muted: #5f7365;
+      --line: #dbe6da;
+      --accent: #2e7d32;
+      --accent-dark: #1f5c23;
+      --warn: #b7791f;
+      --danger: #b42318;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    header {
+      background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+      color: white;
+      padding: 18px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 4px 14px rgba(0,0,0,.12);
+    }
+    header h1 {
+      margin: 0 0 6px 0;
+      font-size: 24px;
+    }
+    header p {
+      margin: 0;
+      opacity: 0.92;
+      font-size: 14px;
+    }
+    .wrap {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+    .tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .tab-btn {
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--text);
+      padding: 10px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .tab-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 16px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 6px 18px rgba(20,52,24,0.05);
+      margin-bottom: 16px;
+    }
+    .card h2, .card h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+    .muted { color: var(--muted); }
+    label {
+      display: block;
+      margin: 10px 0 6px;
+      font-size: 13px;
+      font-weight: bold;
+      color: var(--muted);
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 10px;
+      border: 1px solid #cfdacf;
+      background: white;
+      font-size: 14px;
+    }
+    textarea { min-height: 90px; resize: vertical; }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 11px 14px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .primary { background: var(--accent); color: white; }
+    .secondary { background: #e9f4ea; color: var(--accent-dark); }
+    .ghost { background: white; color: var(--text); border: 1px solid var(--line); }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+    .pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #edf7ee;
+      color: var(--accent-dark);
+      font-size: 12px;
+      margin: 4px 6px 0 0;
+      font-weight: bold;
+    }
+    .metric {
+      font-size: 28px;
+      font-weight: bold;
+      margin: 6px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      text-align: left;
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    th { color: var(--muted); font-size: 12px; text-transform: uppercase; }
+    .status {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .paid { background: #e8f5e9; color: var(--accent-dark); }
+    .unpaid { background: #fff4df; color: var(--warn); }
+    .small { font-size: 12px; }
+    .customer-list-item {
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      background: #fff;
+    }
+    .customer-list-item.active {
+      border-color: var(--accent);
+      background: #f1faf2;
+    }
+    .login-box {
+      max-width: 520px;
+      margin: 32px auto;
+    }
+    .notice {
+      background: #eff8ff;
+      color: #1d4f91;
+      border: 1px solid #cfe0ff;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    .footer-note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    @media (max-width: 950px) {
+      .grid, .grid-3, .row { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
+  <header>
+    <h1>GreenLine Lawn Care Portal Mockup</h1>
+    <p>Single login screen with role-based routing for admin and customers. Saves in your browser using local storage.</p>
+  </header>
 
-<header>
-<h2>Lawn Care Business System</h2>
-</header>
+  <div class="wrap">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('login')">Login</button>
+      <button class="tab-btn" onclick="showTab('public')">Public View</button>
+    </div>
 
-<div class="container">
+    <section id="login" class="panel active">
+      <div class="login-box" id="loginBox">
+        <div class="card">
+          <h2>Sign In</h2>
+          <div class="notice">One login screen for everyone. Admin users go to the owner dashboard. Customer users go to their account portal.</div>
+          <label>Email</label>
+          <input id="mainLoginEmail" placeholder="name@email.com" />
+          <label>Password</label>
+          <input id="mainLoginPassword" type="password" placeholder="Password" />
+          <div class="actions">
+            <button class="primary" onclick="mainLogin()">Log In</button>
+            <button class="ghost" onclick="mockForgotPassword()">Forgot Password</button>
+            <button class="secondary" onclick="fillAdminDemo()">Use Admin Demo</button>
+            <button class="secondary" onclick="fillCustomerDemo()">Use Customer Demo</button>
+          </div>
+          <div class="footer-note">Mockup login only. Real version will use secure email/password authentication, password reset email, and role-based access.</div>
+        </div>
+      </div>
 
-<div class="tabs">
-<button onclick="showTab('owner')">Owner</button>
-<button onclick="showTab('customer')">Customer</button>
-</div>
+      <div id="adminApp" style="display:none;">
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+          <div>
+            <h2 style="margin-bottom:6px;">Owner Dashboard</h2>
+            <div class="muted">Logged in as admin: <span id="whoLoggedInAdmin"></span></div>
+          </div>
+          <div class="actions" style="margin-top:0;">
+            <button class="ghost" onclick="logoutUser()">Log Out</button>
+          </div>
+        </div>
 
-<!-- OWNER PANEL -->
-<div id="owner">
+        <div class="grid-3">
+          <div class="card">
+            <div class="muted small">Total Customers</div>
+            <div class="metric" id="metricCustomers">0</div>
+          </div>
+          <div class="card">
+            <div class="muted small">Outstanding Balance</div>
+            <div class="metric" id="metricBalance">$0.00</div>
+          </div>
+          <div class="card">
+            <div class="muted small">Unpaid Invoices</div>
+            <div class="metric" id="metricInvoices">0</div>
+          </div>
+        </div>
 
-<div class="card">
-<h3>Add Customer</h3>
-<input id="name" placeholder="Customer Name">
-<input id="street" placeholder="Street Number (ex: 1234)">
-<input id="address" placeholder="Full Address">
-<button class="primary" onclick="addCustomer()">Save Customer</button>
-</div>
+        <div class="grid">
+          <div>
+            <div class="card">
+              <h2>Add New Customer / Property</h2>
+              <div class="row">
+                <div>
+                  <label>Customer Name</label>
+                  <input id="newName" placeholder="John Smith" />
+                </div>
+                <div>
+                  <label>Email / Login</label>
+                  <input id="newEmail" placeholder="john@email.com" />
+                </div>
+              </div>
+              <div class="row">
+                <div>
+                  <label>Street Number</label>
+                  <input id="newStreetNumber" placeholder="1234" />
+                </div>
+                <div>
+                  <label>Phone</label>
+                  <input id="newPhone" placeholder="513-555-5555" />
+                </div>
+              </div>
+              <label>Service Address</label>
+              <input id="newAddress" placeholder="1234 Meadow Lane, Fairfield, OH" />
+              <label>Default Services at This Location</label>
+              <input id="newServices" placeholder="Weekly mowing, mulch, shrub trimming" />
+              <label>Owner Notes</label>
+              <textarea id="newNotes" placeholder="Gate code, dog in yard, bill monthly, etc."></textarea>
+              <div class="actions">
+                <button class="primary" onclick="addCustomer()">Save Customer</button>
+                <button class="ghost" onclick="seedDemo()">Reload Demo Data</button>
+              </div>
+            </div>
 
-<div class="card">
-<h3>Find Customer (Street #)</h3>
-<input id="lookup" placeholder="Enter street number">
-<button class="primary" onclick="findCustomer()">Find</button>
-<p id="currentCustomer"></p>
-</div>
+            <div class="card">
+              <h2>Find Property Fast From Truck</h2>
+              <p class="muted">Type the street number. Example: when you finish 1234 Meadow Lane, enter <strong>1234</strong> and pull up that account.</p>
+              <div class="row">
+                <div>
+                  <label>Street Number Lookup</label>
+                  <input id="lookupStreet" placeholder="1234" />
+                </div>
+                <div style="display:flex;align-items:flex-end;">
+                  <button class="primary" style="width:100%;" onclick="lookupByStreet()">Find Account</button>
+                </div>
+              </div>
+              <div id="lookupResult" class="footer-note"></div>
+            </div>
 
-<div class="card">
-<h3>Add Job</h3>
-<select id="service">
-<option value="55">Mowing - $55</option>
-<option value="185">Mulch - $185</option>
-<option value="95">Trim - $95</option>
-<option value="0">Custom</option>
-</select>
-<input id="amount" placeholder="Custom amount">
-<input id="notes" placeholder="Notes">
-<button class="primary" onclick="addJob()">Add Job</button>
-</div>
+            <div class="card">
+              <h2>Customer List</h2>
+              <div id="customerList"></div>
+            </div>
+          </div>
 
-<div class="card">
-<h3>Invoices</h3>
-<ul id="ownerInvoices"></ul>
-</div>
+          <div>
+            <div class="card">
+              <h2>Selected Customer</h2>
+              <div id="selectedCustomerArea"></div>
+            </div>
 
-</div>
+            <div class="card">
+              <h2>Add Job / Charge</h2>
+              <div class="row">
+                <div>
+                  <label>Service Performed</label>
+                  <select id="jobService">
+                    <option value="Mowing">Mowing</option>
+                    <option value="Mulch">Mulch</option>
+                    <option value="Shrub Trimming">Shrub Trimming</option>
+                    <option value="Spring Cleanup">Spring Cleanup</option>
+                    <option value="Leaf Cleanup">Leaf Cleanup</option>
+                    <option value="Snow Removal">Snow Removal</option>
+                    <option value="Custom">Custom</option>
+                  </select>
+                </div>
+                <div>
+                  <label>Amount</label>
+                  <input id="jobAmount" type="number" step="0.01" placeholder="55.00" />
+                </div>
+              </div>
+              <div class="row">
+                <div>
+                  <label>Date</label>
+                  <input id="jobDate" type="date" />
+                </div>
+                <div>
+                  <label>Mark Paid Now?</label>
+                  <select id="jobStatus">
+                    <option value="Unpaid">Unpaid</option>
+                    <option value="Paid">Paid</option>
+                  </select>
+                </div>
+              </div>
+              <label>Job Notes</label>
+              <textarea id="jobNotes" placeholder="Front and rear mowed, trimmed fence line, added 8 bags black mulch, etc."></textarea>
+              <div class="actions">
+                <button class="primary" onclick="addJob()">Add Job / Invoice</button>
+                <button class="secondary" onclick="markSelectedPaid()">Mark Selected Unpaid Items Paid</button>
+              </div>
+              <div class="footer-note">This is the owner side. Later this same workflow can become a phone app or live website.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<!-- CUSTOMER PANEL -->
-<div id="customer" style="display:none">
+    <section id="public" class="panel">
+      <div class="card">
+        <h2>Public Website View</h2>
+        <p class="muted">This is where your marketing site would sit outside the login area. Example sections would be services, contact form, quote request, payment info, and the main sign-in button.</p>
+        <div class="row">
+          <div>
+            <h3>Example Public Features</h3>
+            <div><span class="pill">Weekly Mowing</span><span class="pill">Mulch Installation</span><span class="pill">Shrub Trimming</span><span class="pill">Spring Cleanup</span></div>
+          </div>
+          <div>
+            <h3>Main Customer Actions</h3>
+            <div><span class="pill">Log In</span><span class="pill">Request Quote</span><span class="pill">Contact Office</span><span class="pill">Pay Invoice</span></div>
+          </div>
+        </div>
+      </div>
 
-<div class="card">
-<h3>Customer Login</h3>
-<input id="loginStreet" placeholder="Enter your street number">
-<button class="primary" onclick="login()">Login</button>
-</div>
+      <div id="customerApp" style="display:none;">
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+          <div>
+            <h2 style="margin-bottom:6px;">Customer Account</h2>
+            <div class="muted">Logged in as customer: <span id="whoLoggedInCustomer"></span></div>
+          </div>
+          <div class="actions" style="margin-top:0;">
+            <button class="ghost" onclick="logoutUser()">Log Out</button>
+          </div>
+        </div>
+        <div id="customerLoggedIn"></div>
+      </div>
+    </section>
+  </div>
 
-<div id="customerArea"></div>
+  <script>
+    const defaultCustomers = [
+      {
+        id: 'c1',
+        name: 'Johnson Family',
+        email: 'johnson@example.com',
+        streetNumber: '1428',
+        address: '1428 Meadow Lane, Fairfield, OH',
+        phone: '(555) 321-1100',
+        services: ['Weekly Mowing', 'Spring Mulch'],
+        notes: 'Back gate unlocked on Thursdays.',
+        jobs: [
+          { id: 'j1', date: '2026-04-01', service: 'Mowing', amount: 55, notes: 'Front and back cut.', status: 'Paid' },
+          { id: 'j2', date: '2026-04-08', service: 'Mowing', amount: 55, notes: 'Edged driveway.', status: 'Unpaid' }
+        ]
+      },
+      {
+        id: 'c2',
+        name: 'Oak Ridge HOA',
+        email: 'hoa@oakridge.com',
+        streetNumber: '900',
+        address: '900 Oak Ridge Dr, Fairfield, OH',
+        phone: '(555) 111-9088',
+        services: ['Common Area Mowing', 'Shrub Trimming'],
+        notes: 'Bill twice monthly.',
+        jobs: [
+          { id: 'j3', date: '2026-04-06', service: 'Mowing', amount: 240, notes: 'Common area complete.', status: 'Unpaid' },
+          { id: 'j4', date: '2026-03-18', service: 'Shrub Trimming', amount: 180, notes: 'Clubhouse area.', status: 'Paid' }
+        ]
+      },
+      {
+        id: 'c3',
+        name: 'Baker Residence',
+        email: 'baker@example.com',
+        streetNumber: '77',
+        address: '77 Sycamore Ct, Fairfield, OH',
+        phone: '(555) 880-2231',
+        services: ['Biweekly Mowing'],
+        notes: 'Dog in backyard after 5PM.',
+        jobs: [
+          { id: 'j5', date: '2026-04-04', service: 'Mulch', amount: 185, notes: 'Black mulch install.', status: 'Unpaid' }
+        ]
+      }
+    ];
 
-</div>
+    let customers = JSON.parse(localStorage.getItem('lawnPortalCustomers') || 'null') || JSON.parse(JSON.stringify(defaultCustomers));
+    let selectedCustomerId = customers[0] ? customers[0].id : null;
+    let sessionUser = null;
+    const adminAccount = { email: 'admin@greenline.com', password: 'admin123', role: 'admin', name: 'Owner Admin' };
 
-</div>
+    document.getElementById('jobDate').value = new Date().toISOString().slice(0,10);
 
-<script>
+    function saveData() {
+      localStorage.setItem('lawnPortalCustomers', JSON.stringify(customers));
+    }
 
-let customers = JSON.parse(localStorage.getItem("customers")) || [];
-let selected = null;
-let loggedIn = null;
+    function money(n) {
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n || 0);
+    }
 
-function save(){
-localStorage.setItem("customers", JSON.stringify(customers));
-}
+    function uid(prefix='id') {
+      return prefix + Math.random().toString(36).slice(2, 10);
+    }
 
-function showTab(tab){
-document.getElementById("owner").style.display = tab==="owner" ? "block":"none";
-document.getElementById("customer").style.display = tab==="customer" ? "block":"none";
-}
+    function showTab(tab) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tab).classList.add('active');
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        if (btn.textContent.toLowerCase().includes(tab)) btn.classList.add('active');
+      });
+    }
 
-function addCustomer(){
-let c = {
-name: name.value,
-street: street.value,
-address: address.value,
-jobs:[]
-};
-customers.push(c);
-save();
-alert("Customer added");
-}
+    function fillAdminDemo() {
+      document.getElementById('mainLoginEmail').value = 'admin@greenline.com';
+      document.getElementById('mainLoginPassword').value = 'admin123';
+    }
 
-function findCustomer(){
-selected = customers.find(c => c.street === lookup.value);
-if(selected){
-currentCustomer.innerText = selected.name + " - " + selected.address;
-renderOwnerInvoices();
-}else{
-currentCustomer.innerText = "Not found";
-}
-}
+    function fillCustomerDemo() {
+      document.getElementById('mainLoginEmail').value = 'johnson@example.com';
+      document.getElementById('mainLoginPassword').value = 'demo123';
+    }
 
-function addJob(){
-if(!selected){ alert("Find customer first"); return; }
+    function mockForgotPassword() {
+      alert('Mockup only: in the real version this would send a password reset email.');
+    }
 
-let price = amount.value || service.value;
+    function mainLogin() {
+      const email = document.getElementById('mainLoginEmail').value.trim().toLowerCase();
+      const password = document.getElementById('mainLoginPassword').value;
 
-selected.jobs.push({
-date: new Date().toLocaleDateString(),
-service: service.options[service.selectedIndex].text,
-amount: Number(price),
-notes: notes.value,
-paid:false
-});
+      if (email === adminAccount.email && password === adminAccount.password) {
+        sessionUser = { role: 'admin', email: adminAccount.email, name: adminAccount.name };
+        document.getElementById('whoLoggedInAdmin').textContent = sessionUser.email;
+        document.getElementById('loginBox').style.display = 'none';
+        document.getElementById('adminApp').style.display = 'block';
+        document.getElementById('customerApp').style.display = 'none';
+        showTab('login');
+        return;
+      }
 
-save();
-renderOwnerInvoices();
-}
+      const customer = customers.find(c => (c.email || '').toLowerCase() === email);
+      if (!customer) {
+        alert('No account found for that email in this mockup.');
+        return;
+      }
 
-function renderOwnerInvoices(){
-let list = document.getElementById("ownerInvoices");
-list.innerHTML = "";
+      if (password !== 'demo123') {
+        alert('Mockup customer password is demo123 for all demo customer accounts.');
+        return;
+      }
 
-selected.jobs.forEach(j=>{
-let li = document.createElement("li");
-li.innerText = `${j.date} - $${j.amount} - ${j.service}`;
-list.appendChild(li);
-});
-}
+      sessionUser = { role: 'customer', email: customer.email, customerId: customer.id, name: customer.name };
+      document.getElementById('whoLoggedInCustomer').textContent = sessionUser.email;
+      document.getElementById('loginBox').style.display = 'block';
+      document.getElementById('adminApp').style.display = 'none';
+      document.getElementById('customerApp').style.display = 'block';
+      renderCustomerPortal();
+      showTab('public');
+    }
 
-function login(){
-loggedIn = customers.find(c => c.street === loginStreet.value);
-if(!loggedIn){ alert("Not found"); return; }
-renderCustomer();
-}
+    function logoutUser() {
+      sessionUser = null;
+      document.getElementById('adminApp').style.display = 'none';
+      document.getElementById('customerApp').style.display = 'none';
+      document.getElementById('loginBox').style.display = 'block';
+      document.getElementById('mainLoginEmail').value = '';
+      document.getElementById('mainLoginPassword').value = '';
+      showTab('login');
+    }
 
-function renderCustomer(){
-let div = document.getElementById("customerArea");
+    function getCustomer(id) {
+      return customers.find(c => c.id === id);
+    }
 
-let balance = loggedIn.jobs
-.filter(j=>!j.paid)
-.reduce((sum,j)=>sum+j.amount,0);
+    function calcCustomerBalance(customer) {
+      return customer.jobs.filter(j => j.status === 'Unpaid').reduce((sum, j) => sum + Number(j.amount || 0), 0);
+    }
 
-div.innerHTML = `
-<div class="card">
-<h3>${loggedIn.name}</h3>
-<p><strong>Balance:</strong> $${balance}</p>
-<button onclick="payAll()" class="primary">Pay All</button>
-</div>
+    function renderOwner() {
+      const totalBalance = customers.reduce((sum, c) => sum + calcCustomerBalance(c), 0);
+      const unpaidInvoices = customers.reduce((sum, c) => sum + c.jobs.filter(j => j.status === 'Unpaid').length, 0);
+      document.getElementById('metricCustomers').textContent = customers.length;
+      document.getElementById('metricBalance').textContent = money(totalBalance);
+      document.getElementById('metricInvoices').textContent = unpaidInvoices;
 
-<div class="card">
-<h3>History</h3>
-<ul>
-${loggedIn.jobs.map(j=>`
-<li>${j.date} - $${j.amount} - ${j.service} - ${j.paid?"Paid":"Unpaid"}</li>
-`).join("")}
-</ul>
-</div>
-`;
-}
+      const list = document.getElementById('customerList');
+      list.innerHTML = '';
+      customers.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'customer-list-item' + (c.id === selectedCustomerId ? ' active' : '');
+        div.innerHTML = `
+          <strong>${c.name}</strong><br>
+          <span class="small muted">${c.address}</span><br>
+          <span class="small">Street #: ${c.streetNumber} · Balance: ${money(calcCustomerBalance(c))}</span>
+        `;
+        div.onclick = () => {
+          selectedCustomerId = c.id;
+          renderOwner();
+        };
+        list.appendChild(div);
+      });
 
-function payAll(){
-loggedIn.jobs.forEach(j=>j.paid=true);
-save();
-renderCustomer();
-alert("Paid (mock)");
-}
+      const selected = getCustomer(selectedCustomerId);
+      const area = document.getElementById('selectedCustomerArea');
+      if (!selected) {
+        area.innerHTML = '<p class="muted">No customer selected.</p>';
+        return;
+      }
 
-</script>
+      area.innerHTML = `
+        <h3 style="margin-bottom:6px;">${selected.name}</h3>
+        <div class="muted">${selected.address}</div>
+        <div class="small" style="margin-top:6px;">Email: ${selected.email || '-'} · Phone: ${selected.phone || '-'}</div>
+        <div style="margin-top:10px;"><span class="pill">Street #: ${selected.streetNumber}</span><span class="pill">Balance: ${money(calcCustomerBalance(selected))}</span></div>
+        <div style="margin-top:10px;"><strong>Default Services:</strong><br>${(selected.services || []).map(s => `<span class="pill">${s}</span>`).join('') || '<span class="muted">None</span>'}</div>
+        <div style="margin-top:12px;"><strong>Owner Notes:</strong><br><span class="muted">${selected.notes || 'None'}</span></div>
+        <div style="margin-top:16px;"><strong>Recent Job History</strong></div>
+        <table>
+          <thead>
+            <tr><th></th><th>Date</th><th>Service</th><th>Amount</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            ${selected.jobs.slice().sort((a,b) => b.date.localeCompare(a.date)).map(job => `
+              <tr>
+                <td><input type="checkbox" data-jobid="${job.id}" ${job.status === 'Paid' ? 'disabled' : ''}></td>
+                <td>${job.date}</td>
+                <td>${job.service}<div class="small muted">${job.notes || ''}</div></td>
+                <td>${money(job.amount)}</td>
+                <td><span class="status ${job.status === 'Paid' ? 'paid' : 'unpaid'}">${job.status}</span></td>
+              </tr>
+            `).join('') || '<tr><td colspan="5">No jobs yet.</td></tr>'}
+          </tbody>
+        </table>
+        <div class="footer-note">Check unpaid items above, then click “Mark Selected Unpaid Items Paid.”</div>
+      `;
+    }
 
+    function addCustomer() {
+      const name = document.getElementById('newName').value.trim();
+      const email = document.getElementById('newEmail').value.trim();
+      const streetNumber = document.getElementById('newStreetNumber').value.trim();
+      const phone = document.getElementById('newPhone').value.trim();
+      const address = document.getElementById('newAddress').value.trim();
+      const services = document.getElementById('newServices').value.split(',').map(s => s.trim()).filter(Boolean);
+      const notes = document.getElementById('newNotes').value.trim();
+
+      if (!name || !address || !streetNumber) {
+        alert('Need at least customer name, street number, and address.');
+        return;
+      }
+
+      const customer = {
+        id: uid('c'),
+        name,
+        email,
+        streetNumber,
+        phone,
+        address,
+        services,
+        notes,
+        jobs: []
+      };
+
+      customers.unshift(customer);
+      selectedCustomerId = customer.id;
+      saveData();
+      renderOwner();
+
+      ['newName','newEmail','newStreetNumber','newPhone','newAddress','newServices','newNotes'].forEach(id => document.getElementById(id).value = '');
+    }
+
+    function lookupByStreet() {
+      const value = document.getElementById('lookupStreet').value.trim();
+      const result = customers.find(c => c.streetNumber === value);
+      const out = document.getElementById('lookupResult');
+      if (!result) {
+        out.innerHTML = '<span style="color:#b42318;">No account found for that street number.</span>';
+        return;
+      }
+      selectedCustomerId = result.id;
+      renderOwner();
+      out.innerHTML = `Loaded: <strong>${result.name}</strong> — ${result.address}`;
+    }
+
+    function addJob() {
+      const customer = getCustomer(selectedCustomerId);
+      if (!customer) {
+        alert('Select a customer first.');
+        return;
+      }
+      const service = document.getElementById('jobService').value;
+      const amount = parseFloat(document.getElementById('jobAmount').value || '0');
+      const date = document.getElementById('jobDate').value;
+      const status = document.getElementById('jobStatus').value;
+      const notes = document.getElementById('jobNotes').value.trim();
+
+      if (!service || !amount || !date) {
+        alert('Need service, amount, and date.');
+        return;
+      }
+
+      customer.jobs.push({
+        id: uid('j'),
+        date,
+        service,
+        amount,
+        notes,
+        status
+      });
+
+      saveData();
+      renderOwner();
+      renderCustomerPortal();
+      document.getElementById('jobAmount').value = '';
+      document.getElementById('jobNotes').value = '';
+      document.getElementById('jobStatus').value = 'Unpaid';
+    }
+
+    function markSelectedPaid() {
+      const customer = getCustomer(selectedCustomerId);
+      if (!customer) return;
+      const checked = Array.from(document.querySelectorAll('#selectedCustomerArea input[type="checkbox"]:checked')).map(cb => cb.getAttribute('data-jobid'));
+      if (!checked.length) {
+        alert('No unpaid items selected.');
+        return;
+      }
+      customer.jobs.forEach(job => {
+        if (checked.includes(job.id)) job.status = 'Paid';
+      });
+      saveData();
+      renderOwner();
+      renderCustomerPortal();
+    }
+
+    function customerPaySelected() {
+      const customer = getCustomer(sessionUser && sessionUser.customerId);
+      if (!customer) return;
+      const checked = Array.from(document.querySelectorAll('#customerLoggedIn input[type="checkbox"]:checked')).map(cb => cb.getAttribute('data-jobid'));
+      if (!checked.length) {
+        alert('Select at least one unpaid bill.');
+        return;
+      }
+      customer.jobs.forEach(job => {
+        if (checked.includes(job.id)) job.status = 'Paid';
+      });
+      saveData();
+      renderOwner();
+      renderCustomerPortal();
+      alert('Mock payment complete. In the real site, this is where Stripe or Square checkout would open.');
+    }
+
+    function renderCustomerPortal() {
+      if (!sessionUser || sessionUser.role !== 'customer') return;
+      const customer = getCustomer(sessionUser.customerId);
+      if (!customer) return;
+      const sortedJobs = customer.jobs.slice().sort((a,b) => b.date.localeCompare(a.date));
+      const unpaid = sortedJobs.filter(j => j.status === 'Unpaid');
+      const unpaidTotal = unpaid.reduce((sum, j) => sum + Number(j.amount || 0), 0);
+      const loggedIn = document.getElementById('customerLoggedIn');
+      loggedIn.innerHTML = `
+        <div class="grid-3">
+          <div class="card"><div class="muted small">Customer</div><div class="metric" style="font-size:22px;">${customer.name}</div></div>
+          <div class="card"><div class="muted small">Open Balance</div><div class="metric" style="font-size:22px;">${money(unpaidTotal)}</div></div>
+          <div class="card"><div class="muted small">Unpaid Bills</div><div class="metric" style="font-size:22px;">${unpaid.length}</div></div>
+        </div>
+        <div class="card">
+          <h2>Account Overview</h2>
+          <div class="row">
+            <div>
+              <strong>Service Address</strong><br>
+              <span class="muted">${customer.address}</span>
+            </div>
+            <div>
+              <strong>Email</strong><br>
+              <span class="muted">${customer.email || '-'}</span>
+            </div>
+          </div>
+          <div style="margin-top:10px;"><strong>Services at This Property</strong><br>${(customer.services || []).map(s => `<span class="pill">${s}</span>`).join('') || '<span class="muted">None listed</span>'}</div>
+          <div class="actions">
+            <button class="primary" onclick="customerPaySelected()">Pay Selected Bills</button>
+            <button class="ghost" onclick="logoutUser()">Log Out</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Billing History</h2>
+          <table>
+            <thead>
+              <tr><th></th><th>Date</th><th>Service</th><th>Notes</th><th>Amount</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              ${sortedJobs.map(job => `
+                <tr>
+                  <td>${job.status === 'Unpaid' ? `<input type="checkbox" data-jobid="${job.id}">` : ''}</td>
+                  <td>${job.date}</td>
+                  <td>${job.service}</td>
+                  <td class="muted">${job.notes || ''}</td>
+                  <td>${money(job.amount)}</td>
+                  <td><span class="status ${job.status === 'Paid' ? 'paid' : 'unpaid'}">${job.status}</span></td>
+                </tr>
+              `).join('') || '<tr><td colspan="6">No billing history yet.</td></tr>'}
+            </tbody>
+          </table>
+          <div class="footer-note">Real version: secure customer login, card payment, emailed receipts, autopay, and text/email reminders.</div>
+        </div>
+      `;
+    }
+
+    function seedDemo() {
+      if (!confirm('Reload demo data? This overwrites current mockup data saved in this browser.')) return;
+      customers = JSON.parse(JSON.stringify(defaultCustomers));
+      selectedCustomerId = customers[0].id;
+      sessionUser = null;
+      saveData();
+      renderOwner();
+      document.getElementById('adminApp').style.display = 'none';
+      document.getElementById('customerApp').style.display = 'none';
+      document.getElementById('loginBox').style.display = 'block';
+      showTab('login');
+    }
+
+    renderOwner();
+  </script>
 </body>
 </html>
